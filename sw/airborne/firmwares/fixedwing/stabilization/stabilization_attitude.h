@@ -75,6 +75,7 @@ extern pprz_t h_ctl_elevator_setpoint;
 
 /* inner yaw loop parameters */
 #if H_CTL_YAW_LOOP
+extern float  h_ctl_yaw_rate_setpoint;
 extern pprz_t h_ctl_rudder_setpoint;
 #endif
 
