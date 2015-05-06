@@ -638,8 +638,42 @@ Bound(Vo, STALL_AIRSPEED, RACE_AIRSPEED);
 #if H_CTL_CL_LOOP
 inline static void h_ctl_cl_loop(void)
 {
+  float Vo = *stateGetAirspeed_f();
+  Bound(Vo, STALL_AIRSPEED, RACE_AIRSPEED);
+/* 
+//used
+H_CTL_CL_FLAPS_STALL
+H_CTL_CL_FLAPS_NOMINAL
+H_CTL_CL_FLAPS_RACE
+H_CTL_CL_DEADBAND
 
-  float cmd = 0;
+STALL_AIRSPEED
+NOMINAL_AIRSPEED
+RACE_AIRSPEED
+*/
+
+ float cmd = 0;
+// deadband around NOMINAL_AIRSPEED, rest linear
+ if(Vo > (NOMINAL_AIRSPEED*(1+H_CTL_CL_DEADBAND*NOMINAL_AIRSPEED/100))){
+    cmd = (Vo - NOMINAL_AIRSPEED)*(H_CTL_CL_FLAPS_RACE - H_CTL_CL_FLAPS_NOMINAL)/(RACE_AIRSPEED - NOMINAL_AIRSPEED);
+  }
+ else{
+    if(Vo < (NOMINAL_AIRSPEED*(1+H_CTL_CL_DEADBAND*NOMINAL_AIRSPEED/100))){
+       cmd = (Vo - NOMINAL_AIRSPEED)*(H_CTL_CL_FLAPS_STALL - H_CTL_CL_FLAPS_NOMINAL)/(STALL_AIRSPEED - NOMINAL_AIRSPEED);
+     }
+    else{
+       cmd = 0;             
+     }
+  }
+// no control in manual mode
+if (pprz_mode == PPRZ_MODE_MANUAL){
+    cmd = 0;             
+  }
+
+// bound max flap angle
+  Bound(cmd, H_CTL_CL_FLAPS_RACE, H_CTL_CL_FLAPS_STALL);
+// from percent to pprz
+  cmd = cmd * MAX_PPRZ;
   h_ctl_flaps_setpoint = TRIM_PPRZ(cmd);
 }
 #endif
