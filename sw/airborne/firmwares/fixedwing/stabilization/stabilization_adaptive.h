@@ -45,7 +45,8 @@ extern float h_ctl_pitch_Kffd;
 extern float h_ctl_pitch_of_roll;
 
 #if H_CTL_YAW_LOOP
-extern float h_ctl_yaw_Kffd;
+extern float h_ctl_yaw_dgain;
+extern float h_ctl_yaw_by_igain;
 #endif
 
 

@@ -148,7 +148,6 @@ pprz_t h_ctl_elevator_setpoint;
 #if H_CTL_YAW_LOOP
 float h_ctl_yaw_rate_setpoint;
 float h_ctl_yaw_dgain;
-float h_ctl_yaw_Kffd;
 float h_ctl_yaw_by_igain;
 float h_ctl_yaw_by_sum_err;
 pprz_t h_ctl_rudder_setpoint;
@@ -305,7 +304,6 @@ void h_ctl_init(void)
 
 #if H_CTL_YAW_LOOP
   h_ctl_yaw_dgain = H_CTL_YAW_DGAIN;
-  h_ctl_yaw_Kffd = H_CTL_YAW_KFFD;
   h_ctl_yaw_by_igain = H_CTL_YAW_BY_IGAIN;
   h_ctl_yaw_by_sum_err = 0;
   h_ctl_rudder_setpoint = 0;
