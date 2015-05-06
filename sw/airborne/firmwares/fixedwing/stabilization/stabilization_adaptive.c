@@ -153,7 +153,7 @@ float h_ctl_yaw_by_sum_err;
 pprz_t h_ctl_rudder_setpoint;
 #endif
 
-/* inner yaw CL parameters */
+/* inner CL loop parameters */
 #if H_CTL_CL_LOOP
 pprz_t h_ctl_flaps_setpoint;
 #endif
