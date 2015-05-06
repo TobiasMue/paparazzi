@@ -44,6 +44,11 @@ extern float h_ctl_pitch_Kffa;
 extern float h_ctl_pitch_Kffd;
 extern float h_ctl_pitch_of_roll;
 
+#if H_CTL_YAW_LOOP
+extern float h_ctl_yaw_Kffd;
+#endif
+
+
 #define H_CTL_ROLL_SUM_ERR_MAX (MAX_PPRZ/2.)
 #define H_CTL_PITCH_SUM_ERR_MAX (MAX_PPRZ/2.)
 
