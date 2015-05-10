@@ -651,19 +651,25 @@ Bound(Vo, STALL_AIRSPEED, RACE_AIRSPEED);
 #if H_CTL_CL_LOOP
 inline static void h_ctl_cl_loop(void)
 {
-  float Vo = *stateGetAirspeed_f();
-  Bound(Vo, STALL_AIRSPEED, RACE_AIRSPEED);
-/* 
-//used
-H_CTL_CL_FLAPS_STALL
-H_CTL_CL_FLAPS_NOMINAL
-H_CTL_CL_FLAPS_RACE
-H_CTL_CL_DEADBAND
 
-STALL_AIRSPEED
-NOMINAL_AIRSPEED
-RACE_AIRSPEED
-*/
+ #ifndef SITL
+  struct Int32Vect3 accel_meas_body;
+  struct Int32RMat *body_to_imu_rmat = orientationGetRMat_i(&imu.body_to_imu);
+  int32_rmat_transp_vmult(&accel_meas_body, body_to_imu_rmat, &imu.accel);
+  float bx = ACCEL_FLOAT_OF_BFP(accel_meas_body.z);
+  // max acc to be taken into acount
+  Bound(bx, 0, 2);
+ #else
+  float bx = 0;
+ #endif
+
+#if H_CTL_CL_LOOP_USE_AIRSPEED_SETPOINT
+  float Vo = v_ctl_auto_airspeed_controlled - v_ctl_auto_airspeed_controlled *(1-sqrt(bx));
+  Bound(Vo, STALL_AIRSPEED, RACE_AIRSPEED);
+#else
+  float Vo = *stateGetAirspeed_f() - *stateGetAirspeed_f() *(1-sqrt(bx));
+  Bound(Vo, STALL_AIRSPEED, RACE_AIRSPEED);
+#endif
 
  float cmd = 0;
 // deadband around NOMINAL_AIRSPEED, rest linear
