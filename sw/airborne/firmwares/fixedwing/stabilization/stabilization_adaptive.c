@@ -517,6 +517,7 @@ inline static void loiter(void)
 
 inline static void h_ctl_pitch_loop(void)
 {
+  static float cmd_fb = 0.;
 #if !USE_GYRO_PITCH_RATE
   static float last_err;
 #endif
@@ -552,6 +553,17 @@ inline static void h_ctl_pitch_loop(void)
   h_ctl_ref.pitch_accel = 0.;
 #endif
 
+#ifdef USE_KFF_UPDATE
+  // update Kff gains
+  h_ctl_pitch_Kffa += KFFA_UPDATE * h_ctl_ref.pitch_accel * cmd_fb / (h_ctl_ref.max_q_dot * h_ctl_ref.max_q_dot);
+  h_ctl_pitch_Kffd += KFFD_UPDATE * h_ctl_ref.pitch_rate  * cmd_fb / (h_ctl_ref.max_q * h_ctl_ref.max_q);
+#ifdef SITL
+  printf("%f %f %f\n", h_ctl_pitch_Kffa, h_ctl_pitch_Kffd, cmd_fb);
+#endif
+  h_ctl_pitch_Kffa = Max(h_ctl_pitch_Kffa, 0);
+  h_ctl_pitch_Kffd = Max(h_ctl_pitch_Kffd, 0);
+#endif
+
   // Compute errors
   float err =  h_ctl_ref.pitch_angle - stateGetNedToBodyEulers_f()->theta;
 #if USE_GYRO_PITCH_RATE
@@ -572,6 +584,7 @@ inline static void h_ctl_pitch_loop(void)
     }
   }
 
+  cmd_fb = h_ctl_pitch_pgain * err;
   float cmd = - h_ctl_pitch_Kffa * h_ctl_ref.pitch_accel
               - h_ctl_pitch_Kffd * h_ctl_ref.pitch_rate
               + h_ctl_pitch_pgain * err
