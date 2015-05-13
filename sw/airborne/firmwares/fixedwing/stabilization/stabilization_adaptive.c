@@ -616,12 +616,12 @@ inline static void h_ctl_yaw_loop(void)
     h_ctl_yaw_by_sum_err = 0.;
   } else {
      if (h_ctl_pitch_igain > 0.){
-//     only update wehn: phi<45degrees and by<2g
-       if(stateGetNedToBodyEulers_f()->phi < 0.785 &&
-          by < 2.0) {
+//     only update wehn: phi<60degrees and by<2g
+       if(fabs(stateGetNedToBodyEulers_f()->phi) < 1.05 &&
+          fabs(by) < 20.) {
        h_ctl_yaw_by_sum_err += by * H_CTL_REF_DT;
 //     max half rudder deflection for trim
-       BoundAbs(h_ctl_yaw_by_sum_err, MAX_PPRZ/(2*h_ctl_yaw_by_igain));
+       BoundAbs(h_ctl_yaw_by_sum_err, MAX_PPRZ/(2* h_ctl_yaw_by_igain));
        }
    } else {
       h_ctl_pitch_sum_err = 0.;
@@ -658,7 +658,7 @@ inline static void h_ctl_cl_loop(void)
   int32_rmat_transp_vmult(&accel_meas_body, body_to_imu_rmat, &imu.accel);
   float bx = ACCEL_FLOAT_OF_BFP(accel_meas_body.z);
   // max acc to be taken into acount
-  Bound(bx, 0, 2);
+  Bound(bx, 0, 20.);
  #else
   float bx = 0;
  #endif
