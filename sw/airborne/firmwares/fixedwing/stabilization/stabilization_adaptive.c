@@ -587,7 +587,7 @@ inline static void h_ctl_pitch_loop(void)
   cmd_fb = h_ctl_pitch_pgain * err;
   float cmd = - h_ctl_pitch_Kffa * h_ctl_ref.pitch_accel
               - h_ctl_pitch_Kffd * h_ctl_ref.pitch_rate
-              + h_ctl_pitch_pgain * err
+              + cmd_fb
               + h_ctl_pitch_dgain * d_err
               + h_ctl_pitch_igain * h_ctl_pitch_sum_err;
 
