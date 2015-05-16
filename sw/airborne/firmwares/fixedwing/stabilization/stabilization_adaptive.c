@@ -652,22 +652,22 @@ Bound(Vo, STALL_AIRSPEED, RACE_AIRSPEED);
 inline static void h_ctl_cl_loop(void)
 {
 
- #ifndef SITL
+#ifndef SITL
   struct Int32Vect3 accel_meas_body;
   struct Int32RMat *body_to_imu_rmat = orientationGetRMat_i(&imu.body_to_imu);
   int32_rmat_transp_vmult(&accel_meas_body, body_to_imu_rmat, &imu.accel);
   float bx = ACCEL_FLOAT_OF_BFP(accel_meas_body.z);
   // max acc to be taken into acount
-  Bound(bx, 0, 20.);
- #else
+  Bound(bx, -20, 0.);
+#else
   float bx = 0;
- #endif
+#endif
 
 #if H_CTL_CL_LOOP_USE_AIRSPEED_SETPOINT
-  float Vo = v_ctl_auto_airspeed_controlled - v_ctl_auto_airspeed_controlled *(1-sqrt(bx));
+  float Vo = v_ctl_auto_airspeed_controlled + v_ctl_auto_airspeed_controlled *(1-sqrt(bx/10));
   Bound(Vo, STALL_AIRSPEED, RACE_AIRSPEED);
 #else
-  float Vo = *stateGetAirspeed_f() - *stateGetAirspeed_f() *(1-sqrt(bx));
+  float Vo = *stateGetAirspeed_f() + *stateGetAirspeed_f() *(1-sqrt(-bx/10));
   Bound(Vo, STALL_AIRSPEED, RACE_AIRSPEED);
 #endif
 
@@ -686,9 +686,8 @@ inline static void h_ctl_cl_loop(void)
   }
 // no control in manual mode
 if (pprz_mode == PPRZ_MODE_MANUAL){
-    cmd = 0;             
+    cmd = 0;
   }
-
 // bound max flap angle
   Bound(cmd, H_CTL_CL_FLAPS_RACE, H_CTL_CL_FLAPS_STALL);
 // from percent to pprz
