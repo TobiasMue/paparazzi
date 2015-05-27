@@ -6,8 +6,12 @@
 
 /// new measurement with every baro_ms5611_read() call
 #define BARO_MS5611_DT BARO_MS5611_READ_PERIOD
+#ifndef BARO_MS5611_R
 #define BARO_MS5611_R 20
+#endif
+#ifndef BARO_MS5611_SIGMA2
 #define BARO_MS5611_SIGMA2 1
+#endif
 extern float baro_ms5611_r;
 extern float baro_ms5611_sigma2;
 
