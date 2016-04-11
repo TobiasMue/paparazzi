@@ -223,10 +223,8 @@ void v_ctl_init(void)
   v_ctl_altitude_pre_climb = 0.;
   v_ctl_altitude_pgain = V_CTL_ALTITUDE_PGAIN;
 
-#ifdef V_CTL_AUTO_THROTTLE_NOMINAL_CRUISE_PITCH
-  v_ctl_auto_throttle_nominal_cruise_pitch = V_CTL_AUTO_THROTTLE_NOMINAL_CRUISE_PITCH;
-#else
-  v_ctl_auto_throttle_nominal_cruise_pitch = 0.;
+#ifndef V_CTL_AUTO_THROTTLE_NOMINAL_CRUISE_PITCH
+#define V_CTL_AUTO_THROTTLE_NOMINAL_CRUISE_PITCH 0
 #endif
 
   v_ctl_auto_airspeed_setpoint = NOMINAL_AIRSPEED;
@@ -414,7 +412,7 @@ void v_ctl_climb_loop(void)
 
   /* pitch pre-command */
   if (launch && (v_ctl_mode >= V_CTL_MODE_AUTO_CLIMB)) {
-    v_ctl_auto_throttle_nominal_cruise_pitch +=  v_ctl_auto_pitch_of_airspeed_igain * (-speed_error) * dt_attidude
+    v_ctl_auto_throttle_nominal_cruise_pitch = V_CTL_AUTO_THROTTLE_NOMINAL_CRUISE_PITCH + v_ctl_auto_pitch_of_airspeed_igain * (-speed_error) * dt_attidude
         + v_ctl_energy_diff_igain * en_dis_err * dt_attidude;
     Bound(v_ctl_auto_throttle_nominal_cruise_pitch, H_CTL_PITCH_MIN_SETPOINT, H_CTL_PITCH_MAX_SETPOINT);
   }
