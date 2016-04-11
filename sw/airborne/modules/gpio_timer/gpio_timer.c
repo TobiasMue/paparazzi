@@ -55,7 +55,7 @@
 
 uint32_t timer_1;
 uint32_t timer_2;
-bool_t status;
+bool status;
 
 void gpio_timer_init(void)
 {
