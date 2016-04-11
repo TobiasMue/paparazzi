@@ -239,7 +239,6 @@ void v_ctl_init(void)
   v_ctl_climb_setpoint = 0.;
 
   /* "auto throttle" inner loop parameters */
-  v_ctl_auto_throttle_nominal_cruise_throttle = V_CTL_AUTO_THROTTLE_NOMINAL_CRUISE_THROTTLE;
   v_ctl_auto_throttle_climb_throttle_increment = V_CTL_AUTO_THROTTLE_CLIMB_THROTTLE_INCREMENT;
   v_ctl_auto_throttle_pitch_of_vz_pgain = V_CTL_AUTO_THROTTLE_PITCH_OF_VZ_PGAIN;
   v_ctl_auto_throttle_of_airspeed_pgain = V_CTL_AUTO_THROTTLE_OF_AIRSPEED_PGAIN;
@@ -391,7 +390,7 @@ void v_ctl_climb_loop(void)
 
   // Auto Cruise Throttle
   if (launch && (v_ctl_mode >= V_CTL_MODE_AUTO_CLIMB)) {
-    v_ctl_auto_throttle_nominal_cruise_throttle +=
+    v_ctl_auto_throttle_nominal_cruise_throttle = V_CTL_AUTO_THROTTLE_NOMINAL_CRUISE_THROTTLE +
       v_ctl_auto_throttle_of_airspeed_igain * speed_error * dt_attidude
       + en_tot_err * v_ctl_energy_total_igain * dt_attidude;
     Bound(v_ctl_auto_throttle_nominal_cruise_throttle, 0.0f, 1.0f);
