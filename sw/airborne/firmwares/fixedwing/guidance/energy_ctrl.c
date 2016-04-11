@@ -304,11 +304,6 @@ void v_ctl_altitude_loop(void)
 
   // Vertical Speed Limiter
   BoundAbs(sp, v_ctl_max_climb);
-
-  // Vertical Acceleration Limiter
-  float incr = sp - v_ctl_climb_setpoint;
-  BoundAbs(incr, 2 * dt_navigation);
-  v_ctl_climb_setpoint += incr;
 }
 
 
