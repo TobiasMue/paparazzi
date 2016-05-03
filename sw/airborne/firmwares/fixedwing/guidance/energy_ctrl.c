@@ -300,6 +300,7 @@ void v_ctl_altitude_loop(void)
 
   // Vertical Speed Limiter
   BoundAbs(sp, v_ctl_max_climb);
+  v_ctl_climb_setpoint = sp;
 }
 
 
