@@ -229,7 +229,6 @@ void v_ctl_init(void)
 
   v_ctl_auto_airspeed_setpoint = NOMINAL_AIRSPEED;
   v_ctl_auto_airspeed_setpoint_slew = v_ctl_auto_airspeed_setpoint;
-  v_ctl_airspeed_pgain = V_CTL_AIRSPEED_PGAIN;
 
   v_ctl_max_acceleration = V_CTL_MAX_ACCELERATION;
 
@@ -352,6 +351,14 @@ void v_ctl_climb_loop(void)
 
   // Airspeed outerloop: positive means we need to accelerate
   float speed_error = v_ctl_auto_airspeed_controlled - stateGetAirspeed_f();
+
+#ifdef V_CTL_AIRSPEED_PGAIN
+  v_ctl_airspeed_pgain = V_CTL_AIRSPEED_PGAIN;
+#else //calculate   v_ctl_altitude_pgain;
+    // 2m -> 1.4796m/s from v1=sqrt(v2^2-g*2*dH)
+    // v_ctl_airspeed_pgain = (2 * v_ctl_altitude_pgain * 9.81)/(v_ctl_auto_airspeed_setpoint*1.4796);
+    v_ctl_airspeed_pgain = ((v_ctl_auto_airspeed_controlled*v_ctl_auto_airspeed_controlled-stateGetAirspeed_f()*stateGetAirspeed_f())*v_ctl_altitude_pgain)/(2*v_ctl_auto_airspeed_setpoint*(v_ctl_auto_airspeed_controlled-stateGetAirspeed_f()));
+#endif
 
   // Speed Controller to PseudoControl: gain 1 -> 5m/s error = 0.5g acceleration
   v_ctl_desired_acceleration = speed_error * v_ctl_airspeed_pgain / 9.81f;
