@@ -412,8 +412,8 @@ void v_ctl_climb_loop(void)
 
   /* pitch pre-command */
   if (launch && (v_ctl_mode >= V_CTL_MODE_AUTO_CLIMB)) {
-    v_ctl_auto_throttle_nominal_cruise_pitch = V_CTL_AUTO_THROTTLE_NOMINAL_CRUISE_PITCH + v_ctl_auto_pitch_of_airspeed_igain * (-speed_error) * dt_attidude
-        + v_ctl_energy_diff_igain * en_dis_err * dt_attidude;
+    v_ctl_auto_throttle_nominal_cruise_pitch = V_CTL_AUTO_THROTTLE_NOMINAL_CRUISE_PITCH;
+
     Bound(v_ctl_auto_throttle_nominal_cruise_pitch, H_CTL_PITCH_MIN_SETPOINT, H_CTL_PITCH_MAX_SETPOINT);
   }
   float v_ctl_pitch_of_vz =
@@ -421,7 +421,10 @@ void v_ctl_climb_loop(void)
     - v_ctl_auto_pitch_of_airspeed_pgain * speed_error
     + v_ctl_auto_pitch_of_airspeed_dgain * vdot
     + v_ctl_energy_diff_pgain * en_dis_err
-    + v_ctl_auto_throttle_nominal_cruise_pitch;
+    + v_ctl_auto_throttle_nominal_cruise_pitch
+    + v_ctl_auto_pitch_of_airspeed_igain * (-speed_error) * dt_attidude
+    + v_ctl_energy_diff_igain * en_dis_err * dt_attidude;
+
   if (kill_throttle) { v_ctl_pitch_of_vz = v_ctl_pitch_of_vz - 1 / V_CTL_GLIDE_RATIO; }
 
   v_ctl_pitch_setpoint = v_ctl_pitch_of_vz + nav_pitch;
